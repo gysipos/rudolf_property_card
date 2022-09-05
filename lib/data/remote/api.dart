@@ -7,9 +7,11 @@ import 'package:property_card/data/model/filter_settings.dart';
 class Api {
   Api._();
 
-  // Remote JSON data created and stored at https://jsonbin.io/quick-store/6313d94c5c146d63ca8d5f10
+  // Remote JSON data created and stored at https://jsonbin.io/quick-store/.
+  // Please note that this endpoint is only valid for 24 hours.
+  // When invalidated you should re-upload JSON data again and update _endPoint variable below.
   final String _endPoint =
-      "https://api.jsonbin.io/v3/qs/6313d94c5c146d63ca8d5f10";
+      "https://api.jsonbin.io/v3/qs/63159c79a1610e63861ec105";
 
   // It is only for local testing
   final String _data = """{
