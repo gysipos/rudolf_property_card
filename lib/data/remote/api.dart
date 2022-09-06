@@ -11,7 +11,7 @@ class Api {
   // Please note that this endpoint is only valid for 24 hours.
   // When invalidated you should re-upload JSON data again and update _endPoint variable below.
   final String _endPoint =
-      "https://api.jsonbin.io/v3/qs/63159c79a1610e63861ec105";
+      "https://api.jsonbin.io/v3/qs/6316ff6ba1610e6386202be9";
 
   // It is only for local testing
   final String _data = """{
