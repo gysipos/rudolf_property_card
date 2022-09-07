@@ -7,11 +7,8 @@ import 'package:property_card/data/model/filter_settings.dart';
 class Api {
   Api._();
 
-  // Remote JSON data created and stored at https://jsonbin.io/quick-store/.
-  // Please note that this endpoint is only valid for 24 hours.
-  // When invalidated you should re-upload JSON data again and update _endPoint variable below.
-  final String _endPoint =
-      "https://api.jsonbin.io/v3/qs/6316ff6ba1610e6386202be9";
+  final String _firebaseDbUrl =
+      "https://realmon-1aaec-default-rtdb.europe-west1.firebasedatabase.app/monitors.json";
 
   // It is only for local testing
   final String _data = """{
@@ -74,12 +71,12 @@ class Api {
         () => FilterSettings.fromJson(json.decode(_data)));
   }
 
-  Future<FilterSettings> fetchSettings() async {
-    log('FETCHING FROM REMOTE SERVER...');
-    final response = await http.get(Uri.parse(_endPoint));
+  Future<FilterSettings> fetchSettingsFromFirebase() async {
+    log('FETCHING FROM FIREBASE...');
+    final response = await http.get(Uri.parse(_firebaseDbUrl));
     if (response.statusCode == HttpStatus.ok) {
       final jsonResponse = json.decode(response.body);
-      return FilterSettings.fromJson(jsonResponse['record']);
+      return FilterSettings.fromJson(jsonResponse[0]);
     } else {
       throw ('Fetching data failed');
     }

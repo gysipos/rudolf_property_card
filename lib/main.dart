@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    api.fetchSettings().then((value) {
+    api.fetchSettingsFromFirebase().then((value) {
       setState(() {
         _settings = value;
       });
