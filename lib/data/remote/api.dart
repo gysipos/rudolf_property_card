@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:property_card/data/model/filter_settings.dart';
 
+///The class name "Api" is not descriptive. This could serve any purpose
 class Api {
+  ///With proper dependency injection, you don't need to make Singletons
   Api._();
 
   final String _firebaseDbUrl =

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'data/model/filter_settings.dart';
 import 'data/remote/api.dart';
 
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
+          ///This is not translatable, also a "magic string".
+          ///It's not advised to place texts all around the app
           title: const Text('Figyelések'),
         ),
         body: const MyHomePage(),
@@ -41,14 +44,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  /// Initializing a dependency inside the class creates tight coupling
+  /// Maybe read about the SOLID principles
   final Api api = Api();
 
+  ///This is not sufficient state management for a real word,
+  ///complex application. I recommend reading about the BLoC pattern
   FilterSettings? _settings;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
+
+    ///It's not advised to call setstate within initstate, even if it's inside a .then()
+    ///callback. For this, use
+    ///WidgetsBinding.instance.addPostFrameCallback()
     api.fetchSettingsFromFirebase().then((value) {
       setState(() {
         _settings = value;
@@ -65,7 +76,11 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_errorMessage != null) {
       return infoOnError(context);
     } else {
+      ///this at least should be a FutureBuilder
       if (_settings == null) {
+        ///Please do not use helper methods instead of separate widgets.
+        ///here is why:
+        ///https://www.youtube.com/watch?v=IOyq-eTRhvo
         return loadingIndicator(context);
       } else {
         return realEstateSearchSummaryItem();
@@ -74,12 +89,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget realEstateSearchSummaryItem() {
+    ///Card and Container should be switched up. Here is why:
+    ///https://docs.flutter.dev/development/ui/layout/constraints
     return Container(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
         height: 360,
+
+        /// This is unnecessary
         width: double.maxFinite,
         child: Card(
           elevation: 5,
+
+          ///This overflows on my device by 12 pixels
           child: Column(
             children: [
               Padding(
@@ -88,6 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
+                      ///at this point _settings can't be null
+                      ///this way of writing the code makes you do
+                      ///unnecessary null checks
                       _settings?.name ?? '',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
@@ -106,6 +130,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
+
+              ///This should've been refactored to a different widget
+              ///to keep the code readable
+              /// here you can read about why it's important to write readaable code:
+              /// https://thehosk.medium.com/why-code-readability-is-important-e0c228a238a#:~:text=Code%20readability%20is%20an%20important,is%20harder%20and%20takes%20longer.
               Container(
                 margin: const EdgeInsets.fromLTRB(8, 16, 8, 8),
                 decoration: BoxDecoration(
@@ -126,6 +155,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       thickness: 1.0,
                       color: Colors.grey,
                     ),
+
+                    /// Price and Floor area rows are the same widget with different parameters
+                    /// it's considered a good practice to avoid code duplication:
+                    /// https://en.wikipedia.org/wiki/Duplicate_code#cite_note-1
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                       child: Row(
@@ -166,12 +199,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Padding(
+                /// Maybe use EdgeInsets.symmetric, but it can be considered a personal preference
                 padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: const [
                     Icon(
                       Icons.delete,
+
+                      /// Not having a single source of truth for colors will result in
+                      /// a whole bunch of work when business want's us to change the color theme
                       color: Color.fromARGB(255, 4, 15, 32),
                       size: 24.0,
                     ),

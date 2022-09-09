@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+///consider using a package to generate data classes, like freezed
 class FilterSettings {
   FilterSettings(
       this.name, this.assignmentType, this.estateTypes, this.locations,
@@ -10,6 +11,8 @@ class FilterSettings {
       List<EstateType> types = [];
       List<String> loc = [];
 
+      ///If a variable is not reassigned, use `const` instead of `var`.
+      ///It produces a more performant and smaller machine code.
       for (var element in (json['estateTypes'] as List<dynamic>)) {
         types.add(EstateType.fromString(element)!);
       }
@@ -19,6 +22,8 @@ class FilterSettings {
         loc.add(locationName);
       }
 
+      ///prefer named arguments if a class has many arguments to produce
+      ///more readable code.
       return FilterSettings(json['name'],
           AssignmentType.fromString(json['assignmentType'])!, types, loc,
           minPrice: json['minPrice'],
@@ -53,11 +58,15 @@ class FilterSettings {
   String get locationNames => locations.join(', ');
 
   String get priceRange {
+    /// why are you multiplying by 1?
     var min = (minPrice ?? 0) * 1.0 / 1000000;
     var max = (maxPrice ?? 0) * 1.0 / 1000000;
 
+    /// consider using .round instead of toInt. It's more explicit and more readable.
     var strMin = '${min.toInt().toString()} ';
     var strMax = max > 0 ? '- ${max.toInt().toString()} ' : '';
+
+    ///why are you declaring a variable here, if the value of it is only used once?
     var postfix = 'millió forint';
 
     return '$strMin$strMax$postfix';
@@ -94,6 +103,9 @@ enum AssignmentType {
   String toString() {
     switch (this) {
       case forSale:
+
+        /// this is language dependent.
+        /// Knowing about the app`s language is not the responsibility of the data class
         return "eladó";
       case forRent:
         return "kiadó";
